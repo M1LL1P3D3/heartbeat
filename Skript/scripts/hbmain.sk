@@ -1,0 +1,134 @@
+every 180 real seconds:
+	make console execute "/time day all"
+	make console execute "/weather plots sun"
+	make console execute "/weather spawn sun"
+	make console execute "/weather flatlands sun"
+	make console execute "/butcher"
+	broadcast "%{hb.prefix}% &aRefreshed environments."
+command /refresh:
+	permission: hb.refresh
+	trigger:
+		make console execute "/time day all"
+		make console execute "/weather plots sun"
+		make console execute "/weather spawn sun"
+		make console execute "/weather flatlands sun"
+		make console execute "/butcher"
+		broadcast "%{hb.prefix}% &aEnvironments were manually refreshed by &3%player%&a."
+command /everyone:
+	permission: hb.everyone
+	usage: /<command>
+	trigger:
+		send "%{hb.prefix}% &7There are currently &a%{everyone}%&7 people that play on %{hb.server}%."
+command /fl:
+	permission: hb.fl.go
+	trigger:
+		if {hb.fl.set} is 1:
+			teleport player to {hb.fl.region}
+			send "%{hb.prefix}% &aWelcome to the flatlands! :D"
+			exit trigger
+		send "%{hb.prefix}% &4WARNING: &cFlatland location is not set. Please contact your server admin."
+command /flset:
+	permission: hb.fl.set
+	trigger:
+		set {hb.fl.region} to location of player
+		set {hb.fl.set} to 1
+		send "%{hb.prefix}% &aSet location of flatlands."
+command /sing:
+	permission: hb.sing
+	trigger:
+		send "&0[&5<i>T&d<i>aylor&5<i>B&d<i>ot&r&0] &dWE are never, ever, ever getting back together!"
+		wait 2 real seconds
+		send "&0[&5<i>T&d<i>aylor&5<i>B&d<i>ot&r&0] &dWEEEEE are never, ever, ever, getting back together!"
+		wait 2 real seconds
+		send "&0[&5<i>T&d<i>aylor&5<i>B&d<i>ot&r&0] &dYou go talk to your friends, "
+		wait 1 real seconds
+		send "&0[&5<i>T&d<i>aylor&5<i>B&d<i>ot&r&0] &dtalk to my friends, "
+		wait 1 real seconds
+		send "&0[&5<i>T&d<i>aylor&5<i>B&d<i>ot&r&0] &dtalk to me, "
+		wait 1 real seconds
+		send "&0[&5<i>T&d<i>aylor&5<i>B&d<i>ot&r&0] &dbut WEEEEEEE are never, ever, ever... "
+		wait 2 real seconds
+		send "&0[&5<i>T&d<i>aylor&5<i>B&d<i>ot&r&0] &dGetting back together. "
+		wait 3 real seconds
+		send "&0[&5<i>T&d<i>aylor&5<i>B&d<i>ot&r&0] &d... like, ever. "
+command /warn <player> <text>:
+	usage: /warn <player> <reason>
+	permission: hb.warn
+	trigger:
+		if arg 1 has permission "hb.exempt.warn":
+			send "%{hb.prefix}% &cYou cannot warn &3%arg 1%&c."
+			stop trigger
+		add 1 to {hb.u.%arg 1%.warns.misc}
+		if {hb.u.%arg 1%.warns.misc} is 3:
+			make console execute "/kick %arg 1% [heartbeat] You were warned 3 times."
+			loop all players:
+				loop-player has permission "hb.warn.see":
+				send "%{hb.prefix}% &4Warns: &3%arg 1%&c was kicked by &3%player%&c because they were warned 3 times. Warn no. &6%{hb.u.%arg 1%.warns.misc}%" to loop-player
+			send "%{hb.prefix}% &4Warns: &aYou warned and kicked." to player
+		else:
+			loop all players:
+				loop-player has permission "hb.warn.see":
+				send "%{hb.prefix}% &4Warns: &3%arg 1%&c was warned for &6%arg 2%&c by &3%player%&c. Warn no. &6%{hb.u.%arg 1%.warns.misc}%" to loop-player
+			send "%{hb.prefix}% &4Warns: &cYou were warned." to arg 1
+			send "%{hb.prefix}% &4Warns: &aYou warned." to player
+			if {hb.u.%player%.warns.misc} is above 3:
+				set {hb.u.%player%.warns.misc} to 0
+command /stat <player>:
+	usage: /stat <player>
+	permission: hb.stat
+	trigger:
+		send "%{hb.prefix}% &eHere is everything I know about this '&3%name of arg 1%&e' you speak of:"
+		send "%{hb.prefix}% &eNickname: &r%arg 1%"
+		send "%{hb.prefix}% &eIP address: &6%ip of arg 1%"
+		send "%{hb.prefix}% &eTime logged in: &6%{hb.u.%arg 1%.timeon}%"
+		send "%{hb.prefix}% &eWarns: &6%{hb.u.%arg 1%.warns.misc}%"
+		if {hb.u.%arg 1%.pref.zen} = 1:
+			send "%{hb.prefix}% &eZen mode: &aYes"
+		else:
+			send "%{hb.prefix}% &eZen mode: &cNo"
+		if {hb.u.%arg 1%.pref.spy} = 1:
+			send "%{hb.prefix}% &eSpy mode: &aYes"
+		else:
+			send "%{hb.prefix}% &eSpy mode: &cNo"
+		if arg 1 is op:
+			send "%{hb.prefix}% &eOperator: &aYes"
+		else:
+			send "%{hb.prefix}% &eOperator: &cNo"
+		if arg 1 is flying:
+			send "%{hb.prefix}% &eFlying: &aYes"
+		else:
+			send "%{hb.prefix}% &eFlying: &cNo"
+		if {hb.u.%arg 1%.pref.pvp} = 1:
+			send "%{hb.prefix}% &ePVP mode: &aYes"
+		else:
+			send "%{hb.prefix}% &ePVP mode: &cNo"
+		send "%{hb.prefix}% &ePVP points: &6%{hb.u.%player%.pvp.points}%"
+command /hb <text>:
+	usage: /hb <info|reload|stop|help>
+	permission: hb.main
+	trigger:
+		arg 1 is "info":
+			send "%{hb.prefix}% &eThis server is running &6heartbeat&e version &6%{hb.ver}%&e." to player
+			send "%{hb.prefix}% &eThis bot was created by &dM1LL1P3D3&e on Github." to player
+			exit trigger
+		arg 1 is "reload":
+			send "%{hb.prefix}% &eSending request to Skript engine..."
+			make player execute "/skript reload all"
+			exit trigger
+		arg 1 is "stop":
+			send "%{hb.prefix}% &4WARNING: &cDisabling heartbeat !"
+			send "%{hb.prefix}% &eYou can re-enable it with &6/hb start&e."
+			send "%{hb.prefix}% &eSending request to Skript engine..."
+			make console execute "/skript enable hbfallback"
+			send "%{hb.prefix}% &aheartbeat was disabled."
+			make console execute "/skript disable hbgoto"
+			make console execute "/skript disable hbab"
+			make console execute "/skript disable hbpvp"
+			make console execute "/skript disable hbspy"
+			make console execute "/skript disable hbgg"
+			make console execute "/skript disable hbconf"
+			make console execute "/skript disable hbchat"
+			make console execute "/skript disable hbconnect"
+			make console execute "/skript disable hbadmin"
+			exit trigger
+		send "%{hb.prefix}% &cInvalid subcommand. Use &6info&c, &6reload&c, &6stop&c, or &6help&c."

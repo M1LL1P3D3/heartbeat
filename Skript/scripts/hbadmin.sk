@@ -1,0 +1,33 @@
+command /visit:
+	usage: /visit
+	permission: hb.visit
+	trigger:
+		set {_id} to 0
+		loop all players:
+			loop-player has permission "hb.markers.default"
+			set {hb.visit.id.%{_id}%} to name of loop-player
+			add 1 to {_id}
+		subtract 1 from {_id}
+		set {_randid} to a random integer from 0 to {_id}
+		set {_guest} to {hb.visit.id.%{_randid}%}
+		make console execute "/tp %player% %{_guest}%"
+		send "%{hb.prefix}% &eYou're now helping &3%{_guest}%&e!"
+		send "%{hb.prefix}% &3%player%&e is visiting you! They'll help you in any way!" to {_guest}
+command /fc <text>:
+	permission: hb.fc
+	usage: /fc <chat>
+	trigger:
+		broadcast "%{hb.prefix}% &bForceChat: &3%name of player%&f: &f%arg 1%"
+command /rank <player> <text>:
+	description: Rank a player up one free rank.
+	usage: /rank <player> <rank>
+	permission: hb.rank
+	trigger:
+		make console execute "/pex user %name of arg 1% group set %arg 2%"
+		send "%{hb.prefix}% &aYou ranked &3%name of arg 1%&a to &6%arg 2%&a!"
+command /console <text>:
+	usage: /console <command>
+	permission: hb.console
+	trigger:
+		make server execute "/%arg 1%"
+		send "%{hb.prefix}% &aYou ran the command &6%arg 1%&a from the console."

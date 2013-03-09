@@ -1,0 +1,34 @@
+on chat:
+	cancel event
+	log "%name of player% ~ %message%" to "chat.log"
+	add 1 to {hb.u.%player%.chat}
+	loop all players:
+		{hb.u.%loop-player%.pref.zen} != 1
+		send "&8|&r %player% &8:: &r%message% &8|" to loop-player
+	if message contains "xd":
+		wait 2 real seconds
+		loop all players:
+			{hb.u.%loop-player%.pref.zen} != 1
+			send "%{hb.prefix}% &dLOL!" to loop-player
+	if message contains "lol":
+		wait 2 real seconds
+		loop all players:
+			{hb.u.%loop-player%.pref.zen} != 1
+			send "%{hb.prefix}% &dxD" to loop-player
+	if message is "wtf" or "wth":
+		wait 5 real seconds
+		loop all players:
+			{hb.u.%loop-player%.pref.zen} != 1
+			send "%{hb.prefix}% &dWhat's wrong, %name of player%?" to loop-player
+command /zen:
+	permission: hb.zen
+	description: Toggle Zen Mode on or off.
+	usage: /<command>
+	trigger:
+		if {hb.u.%player%.pref.zen} = 1:
+			set {hb.u.%player%.pref.zen} to 0
+			send "%{hb.prefix}% &aZen Mode was &6on&a, you toggled it &coff&a."
+		else:
+			set {hb.u.%player%.pref.zen} to 1
+			send "%{hb.prefix}% &aZen Mode was &coff&a, you toggled it &6on&a."
+

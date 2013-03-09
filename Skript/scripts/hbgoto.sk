@@ -1,0 +1,85 @@
+command /gotoset <text> <text>:
+	usage: /gotoset <public|private> <name>
+	permission: hb.goto.set
+	trigger:
+		if {hb.goto.%arg 2%.set} is 1:
+			send "%{hb.prefix}% &bGOTO: &6%arg 2% &cwas already set by &3%{hb.goto.%arg 2%.owner}%&c."
+			exit trigger
+		if arg 1 is not "public" or "private":
+			send "%{hb.prefix}% &bGOTO: &cThe security type must be &6public&c or &6private&c."
+			exit trigger
+		set {hb.goto.%arg 2%.region} to location of player
+		if arg 1 is "public":
+			set {hb.goto.%arg 2%.sec} to 0
+		if arg 1 is "private":
+			set {hb.goto.%arg 2%.sec} to 1
+		set {hb.goto.%arg 2%.owner} to player
+		set {hb.goto.%arg 2%.cango.%player%} to 1
+		set {hb.goto.%arg 2%.set} to 1
+		send "%{hb.prefix}% &bGOTO: &aYou set a &6%arg 1%&a GOTO point. '&6%arg 2%&a'."
+		send "%{hb.prefix}% &bGOTO: &eIt can be acessed by doing &b/goto %arg 2%&e."
+		if arg 1 is "private":
+			send "%{hb.prefix}% &eAdd players to your GOTO point with &b/gotoadd&e."
+command /goto <text>:
+	usage: /goto <name>
+	permission: hb.goto.main
+	trigger:
+		if {hb.goto.%arg 1%.set} is 1:
+			if {hb.goto.%arg 1%.sec} is 0:
+				send "%{hb.prefix}% &bGOTO: &eTeleporting you to &6%arg 1%&e..."
+				teleport player to {hb.goto.%arg 1%.region}
+				send "%{hb.prefix}% &bGOTO: &aYou're here! Bienvenidos! :)"
+			else:
+				if {hb.goto.%arg 1%.cango.%player%} is 1:
+					send "%{hb.prefix}% &bGOTO: &eTeleporting you to &6%arg 1%&e..."
+					teleport player to {hb.goto.%arg 1%.region}
+					send "%{hb.prefix}% &bGOTO: &aYou're here! Bienvenidos! :)"
+				else:
+					send "%{hb.prefix}% &bGOTO: &cYou're not allowed to go there."
+		else:
+			send "%{hb.prefix}% &bGOTO: &cSorry, I don't know of any GOTO point called &6%arg 1%&c."
+command /gotoadd <text> <text>:
+	usage: /gotoadd <name> <player>
+	permission: hb.goto.sec
+	trigger:
+		if {hb.goto.%arg 1%.set} is 1:
+			if {hb.goto.%arg 1%.sec} is 1:
+				if {hb.goto.%arg 1%.owner} is player:
+					set {hb.goto.%arg 1%.cango.%arg 2%} to 1
+					send "%{hb.prefix}% &bGOTO: &aAdded &3%arg 2%&a to the GOTO point &6%arg 1%&a."
+				else:
+					send "%{hb.prefix}% &bGOTO: &cYou are not the owner of the GOTO point &6%arg 1%&c!"
+			else:
+				send "%{hb.prefix}% &bGOTO: &6%arg 1%&c is a public GOTO point, you do not need to add players to it."
+		else:
+			send "%{hb.prefix}% &bGOTO: &6%arg 1%&c is not a valid GOTO point."
+command /gotorem <text> <text>:
+	usage: /gotorem <name> <player>
+	permission: hb.goto.sec
+	trigger:
+		if {hb.goto.%arg 1%.set} is 1:
+			if {hb.goto.%arg 1%.sec} is 1:
+				if {hb.goto.%arg 1%.owner} is player:
+					set {hb.goto.%arg 1%.cango.%arg 2%} to 0
+					send "%{hb.prefix}% &bGOTO: &aRemoved &3%arg 2%&a from the GOTO point &6%arg 1%&a."
+				else:
+					send "%{hb.prefix}% &bGOTO: &cYou are not the owner of the GOTO point &6%arg 1%&c!"
+			else:
+				send "%{hb.prefix}% &bGOTO: &6%arg 1%&c is a public GOTO point, you do not need to remove players from it."
+		else:
+			send "%{hb.prefix}% &bGOTO: &6%arg 1%&c is not a valid GOTO point."
+command /gotodel <text>:
+	usage: /gotodel <name>
+	permission: hb.goto.del
+	trigger:
+		if {hb.goto.%arg 1%.set} is 1:
+			if {hb.goto.%arg 1%.owner} is player:
+				set {hb.goto.%arg 1%.sec} to 2
+				set {hb.goto.%arg 1%.owner} to "DEL"
+				set {hb.goto.%arg 1%.set} to 0
+				set {hb.goto.%arg 1%.region} to "DEL"
+				send "%{hb.prefix}% &bGOTO: &aYou deleted the GOTO point &6%arg 1%&a."
+			else:
+				send "%{hb.prefix}% &bGOTO: &cYou are not the owner of the GOTO points %arg 1%&c!"
+		else:
+			send "%{hb.prefix}% &bGOTO: &6%arg 1%&c is not a valid GOTO point."

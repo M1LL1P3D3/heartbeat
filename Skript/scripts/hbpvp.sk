@@ -1,0 +1,25 @@
+command /pvp:
+	description: Toggles PVP mode on or off.
+	permission: hb.pvp
+	trigger:
+		if {hb.u.%player%.pref.pvp} = 1:
+			set {hb.u.%player%.pref.pvp} to 0
+			execute console command "/gm c %name of player%"
+			send "%{hb.prefix}% &aPVP mode was &6on&a, you toggled it &coff&a."
+			clear inventory of player
+		else:
+			set {hb.u.%player%.pref.pvp} to 1
+			execute console command "/gm s %name of player%"
+			send "%{hb.prefix}% &aPVP mode was &coff&a, you toggled it &6on&a."
+			clear inventory of player
+on death of player:
+	if {hb.u.%player%.pref.pvp} = 1:
+		if {hb.u.%attacker%.pref.pvp} = 1:
+			subtract 1 from {hb.u.%player%.pvp.points}
+			add 1 to {hb.u.%attacker%.pvp.points}
+			send "%{hb.prefix}% &bPVP: &cYou were killed by &3%attacker%&c. You now have &6%{hb.u.%player%.pvp.points}%&c points." to player
+			send "%{hb.prefix}% &bPVP: &aYou killed &3%player%&a. You now have &6%{hb.u.%player%.pvp.points}%&c points." to attacker
+			loop all players:
+				{hb.u.%player%.pref.pvp} = 1
+				send "%{hb.prefix}% &bPVP: &ePlayer &3%attacker%&e [&6%{hb.u.%attacker%.pvp.points}%&e] killed &3%player%&e [&6%{hb.u.%player%.pvp.points}%&e] in PVP."
+

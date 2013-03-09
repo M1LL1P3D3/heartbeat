@@ -1,0 +1,50 @@
+on explode:
+	cancel event
+	log "Explosion diffused in %world% at block %location of block%" to "environment.log"
+on burn:
+	cancel event
+on enderman pickup:
+	cancel event
+on place of 10 or 11:
+	if player does not have permission "hb.exempt.lava":
+		cancel event
+		send "%{hb.prefix}% &bGrief-Guard: &cYou cannot place &6lava&c, as many people use it to grief. Get a higher rank to place it for you."
+		loop all players:
+			{hb.u.%loop-player%.pref.spy} is 1
+			send "%{hb.prefix}% &bGrief-Guard: &3%player%&e tried to place &6lava&e, but was blocked." to loop-player
+on place of 8 or 9:
+	if player does not have permission "hb.exempt.water":
+		cancel event
+		send "%{hb.prefix}% &bGrief-Guard: &cYou cannot place &6water&c, as many people use it to grief. Get a higher rank to place it for you."
+		loop all players:
+			{hb.u.%loop-player%.pref.spy} is 1
+			send "%{hb.prefix}% &bGrief-Guard: &3%player%&e tried to place &6water&e, but was blocked." to loop-player
+on place of 7:
+	if player does not have permission "hb.exempt.bedrock":
+		cancel event
+		send "%{hb.prefix}% &bGrief-Guard: &cYou cannot place &6bedrock&c, as many people use it to grief. Get a higher rank to place it for you."
+		loop all players:
+			{hb.u.%loop-player%.pref.spy} is 1
+			send "%{hb.prefix}% &bGrief-Guard: &3%player%&e tried to place &6bedrock&e, but was blocked." to loop-player
+on place of 90 or 119:
+	if player does not have permission "hb.exempt.portal":
+		cancel event
+		send "%{hb.prefix}% &bGrief-Guard: &cYou cannot place &6portal blocks&c, as many people use them to grief. Get a higher rank to place them for you."
+		loop all players:
+			{hb.u.%loop-player%.pref.spy} is 1
+			send "%{hb.prefix}% &bGrief-Guard: &3%player%&e tried to place a &6portal block&e, but was blocked." to loop-player
+on throw of an egg:
+	if player does not have permission "hb.exempt.egging":
+	add 1 to {hb.u.%player%.warns.egging}
+	if size of {hb.u.%player%.warns.egging} is less than 4:
+		send "%{hb.prefix}% &eNo egging, please! Thanks! :D"
+	else:
+		if size of {hb.u.%player%.warns.egging} is between 4 and 9:
+			send "%{hb.prefix}% &cSeriously, no egging. It lags our server."
+		else:
+			if size of {hb.u.%player%.warns.egging} is 10:
+				send "%{hb.prefix}% &4Again with the egging. Last warning!"
+			else:
+				make console execute "/tempban %player% 2h"
+on lightning strike:
+	broadcast "%{hb.prefix}% &eZAP!"

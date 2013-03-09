@@ -1,0 +1,129 @@
+﻿#    ____________________________________________________________
+#   / /                                                     / /\ \
+#   \_\_____________________________________________________\_\/ /
+#        / /    _______  __             __           __       / /
+#       / /    / _____/ / /            /_/          / /      / /
+#      / /    / /____  / /___  _____  __  ______ __/ /_     / /
+#     / /    /____  / /   __/ / ___/ / / / __  //_  __/    / /
+#    / /    _____/ / / /\ \  / /    / / / /_/ /  / /      / /
+#   / /    /______/ /_/ /_/ /_/    /_/ / ____/  /_/      / /__
+#  / /    =========================== / / ==========    / / \ \
+# | |                                /_/               | |   | |
+#  \_\__________________________________________________\_\_/_/
+#
+# == Introduction ==
+# This file contains the general options. To write scripts, make a new .sk file in the scripts folder or edit any existing one.
+#
+# Script files prefixed with a hyphen (-) will not be loaded, e.g. renaming 'plant with hoe.sk' to '-plant with hoe.sk' will disable the whole file.
+# This can e.g. be used to temporarily disable scripts and is also used for Skript's example scripts.
+# You can also use the command '/skript enable/disable <script>' to enable/disable a script which will automatically rename it.
+#
+# === !!! PLEASE NOTE !!! ===
+# This file, all scripts and other files ending in .sk are NOT .yml/YAML files, but very similar!
+# Please remember the following when editing files:
+# - To indent sections you can use spaces like in YAML, but tabs are also allowed. Just remember to stick to the one or the other for the whole file.
+# - '#' starts a comment like in YAML. If you don't want it to start a comment simply double it: '##'.
+# - If you use special characters (§, äöü, éèàôç, ñ, etc.) you have to save the file as UTF-8.
+#
+
+check for new version: true
+# Whether Skript should check for whether a new version of Skript is available when the server starts.
+# If this is set to true Skript will announce a new version to all players with the "skript.admin" permission.
+# If set to false you can still check for a new version with '/skript update check'
+# Please note that Skript will not detect beta releases even if you are running one as they are not neccessarily stable.
+automatically download new version: false
+# Whether Skript should automatically download the newest version if one is available.
+# If you disable this you can still use '/skript update download' to make Skript download the newest version.
+# If you're concerned about changes use '/skript update changes' for a full list of changes since your current version.
+
+enable effect commands: false
+effect command token: !
+# If 'enable effect commands' is set to true, chat messages starting with the 'effect command token' will be interpreted as effects and executed.
+# A player needs the "skript.effectcommands" permission to use such commands,
+# which does not default to OPs since these commands can do severe damage to the world or crash the server.
+# Some example commands which can be used if this setting is enabled:
+#	!heal player - heals the player (doesn't do anything if used from the console)
+#	!repair tool - repairs the currently held item
+#	!broadcast "<red>Please read the rules!" - if you want to get rid of the quotes you have to define a custom command
+#	!set time to 6:00 - sets the time in the current world
+# The command can also be abused, so only give permission to trusted playes, like owners & co-owners:
+#	!spawn 20 ender dragons - ultimate griefing, will destroy a large part of the world in a short time
+#	!create explosion of force 10000 - likely crashes the server or at least hangs it up for a long time
+#	!ban all players - as the effect implies
+
+verbosity: low
+# Determines how much info is logged.
+# Allowed values: low, normal, high, very high, debug
+# The highest you should go is very high, which prints quite a lot of useful information,
+# including how much time each trigger takes to execute.
+# NEVER use debug as it will spam your server log with hundreds of lines of useless information, which is intended to be useful for debugging only.
+
+log player commands: true
+# Whether Skript should log the usage of custom commands.
+# They will be logged as [INFORMATION] in this format: '<player>: /<command> <arguments>'
+
+variables backup interval: 2 hours
+# If this is set to something other than 0 the variables file will be backed up repeatedly.
+# Please note that variables are saved constantly no matter what is set here.
+# Backing up the file could cause Skript to hang while the backup is created. This does likely not happen if your server is running Java 7 though.
+
+database:
+	# Database to store variables in. This can either be used as a simple one-server-storage
+	# where variables are written constantly but only read at server start,
+	# or as a connection between multiple servers by monitoring the database for changes.
+	# ! Please note that this feature is experimental, i.e. might contain severe bugs!
+	
+	type: sqlite
+	# The type of the database. Currently only MySQL and SQLite are supported. Use 'none' for Skript's default CSV flatfile storage.
+	
+	pattern: .*
+	# If you only want to store part of your variables in the database (e.g. only player stats), set this pattern to match only those variables.
+	# Variables that don't match the pattern will be saved in the default flatfile format.
+	# This pattern uses Regex syntax, e.g. use 'db_.*' (without the quotes) to store all variables prefixed with 'db_' in the database,
+	# or use '.*' (the default value) to store all variables in the database.
+	
+	monitor changes: false
+	monitor interval: 20 seconds
+	# If 'monitor changes' is set to true, variables will repeatedly be checked for updates in the database (in intervals set in 'monitor interval').
+	# ! Please note that you should set 'pattern', 'monitor changes' and 'monitor interval' to the same on all servers that access the same database!
+	
+	# MySQL configuration
+	host: localhost
+	port: 3306
+	user: hb
+	password: walrus
+	database: heartbeat
+	
+	# SQLite configuration
+	file: ./plugins/Skript/skdata.db
+
+
+date format: default
+# The date format to be used when dates should be displayed.
+# This can be 'default' to use Java's default date format for the system's language.
+# The format is that of Java's SimpleDateFormat as defined here: http://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html
+# some examples:
+#  d/M/yyyy h:mm a => 15/7/2012 8:53 PM
+#  dd.MM.yyyy, HH:mm => 03.06.1993, 06:15
+
+plugin priority: highest
+# Allowed values: lowest, low, normal, high, highest
+# Change this if you encounter problems with other plugins, e.g.:
+# - cancelled events: The event is cancelled by another plugin, but Skript handles the event nonetheless => increase priority
+#                    (e.g. WorldGuard cancels events if a player doesnt have permission for the given region,
+#                     and you made some 'place' triggers which should not bypass WorldGuard's protection)
+# - effects '(un)cancel event': Another plugin should/should not process the event, but does/does not => decrease priority
+# - effect 'drop': Another plugin doesn't process added drops => decrease priority
+# - effects 'remove ... from drops'/'clear drops': Drops added by other plugins are not removed => increase priority
+#                                                  Skript removes drops it shouldn't => decrease priority or specify which item types to remove
+# If this did not solve it, please post it on the plugin's forums: http://dev.bukkit.org/server-mods/skript/forum/
+
+disable variable conflict warnings: false
+# Disables warnings of potential variable name conflicts if set to true.
+# I recommend to not touch this option, but if you do so you should at least set it back to false
+# whenever you create new scripts with new variables.
+
+enable script caching: false
+# enable or disable caching of scripts.
+# This is currently buggy and not noticeably faster than parsing all scripts when the server starts,
+# thus you should keep this turned off.

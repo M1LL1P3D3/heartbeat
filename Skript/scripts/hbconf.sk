@@ -1,0 +1,4 @@
+variables:
+	{hb.prefix} = "&0[&4<i>h&c<i>eart&3<i>b&b<i>eat&0]&f"
+	{hb.ver} = "2.3"
+	{hb.server} = "the server"

@@ -1,0 +1,6 @@
+command "/hb start":
+	trigger:
+		send "%{hb.prefix}% &eSending request to Skript engine..."
+		make console execute "/skript enable all"
+		send "%{hb.prefix}% &aheartbeat was enabled !"
+		make console execute "/skript disable hbfallback"

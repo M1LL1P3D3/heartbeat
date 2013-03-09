@@ -1,0 +1,16 @@
+on login:
+	set join message to "%{hb.prefix}% &3%player%&7 logged &aon&7 to %{hb.server}%."
+	if {hb.u.%player%.member} is not set:
+		send "%{hb.prefix}% &aWelcome to %{hb.server}%!"
+		send "%{hb.prefix}% &aPlease take time to read all signs at spawn!"
+		send "%{hb.prefix}% &aA tip: If you want to get building right away, do /build!"
+		set {hb.u.%player%.pvp.points} to 0
+		set {hb.u.%player%.warns.misc} to 0
+		set {hb.u.%player%.member} to 1
+		add 1 to {everyone}
+	else:
+		send "%{hb.prefix}% &aWelcome back! :D" to player
+	set {hb.u.%player%.pref.zen} to 0
+	set {hb.u.%player%.timeon} to now
+on quit:
+	set leave message to "%{hb.prefix}% &3%name of player%&7 logged &coff&7 of %{hb.server}%."

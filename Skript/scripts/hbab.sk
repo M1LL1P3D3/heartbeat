@@ -1,0 +1,33 @@
+variables:
+	# DO NOT MODIFY ANY OF THE hb.abmsg VARIABLES.
+	# USE THE INGAME EDITOR. /abedit.
+	{hb.abmsg.1} = "&eNeed help? Do a &6/modreq&e and a staff member will help you!"
+	{hb.abmsg.2} = "&eLooking for some protected, safe space to build? Do &6/build&e to claim your plot now!"
+	{hb.abmsg.3} = "&eSign up on our website for the latest information! Say &6/website&e for the link."
+	{hb.abmsg.4} = "&eVote for the server to get new ranks! It only takes a few seconds. Do &6/vote&e."
+	{hb.abmsg.5} = "&eNeed some wide-open, flat space to build in? Do &6/fl&e!"
+	{hb.abmsg.6} = "&eMake sure to follow us on &6/facebook&e, &6/twitter&e, and &6/youtube&e!"
+	{hb.abmsg.7} = "&eDo &6/contest&e quick info on the latest competitions."
+	{hb.abmsg.8} = "&eWant to use WorldEdit? How about VoxelSniper? Get all that and more for a low price! &6/donate&e!"
+	{hb.abmsg.9} = "&eMake sure you are always following this server's rules! Do &6/rules&e to see them."
+	{hb.abmsg.0} = "&eWant to build in peace and turn off your chat? Do &6/zen&e to toggle Zen Mode!"
+command /abedit <number> <text>:
+	usage: /abedit <id> <message>
+	permission: hb.ab.edit
+	trigger:
+		set {hb.abmsg.%arg 1%} to arg 2
+		send "%{hb.prefix}% &aYou set AutoBroadcast message no. &6%arg 1%&a to &r%arg 2%"
+command /ab <number>:
+	usage: /ab <id>
+	permission: hb.ab.see
+	trigger:
+		if arg 1 is less than 10:
+			send "%{hb.prefix}% &bAB Message no. &6%arg 1%&b is &r%{hb.abmsg.%arg 1%}%"
+			stop trigger
+		send "%{hb.prefix}% &c'&6%arg 1%&c' is not a valid Auto-Broadcast message ID. Try 0-9."
+every 50 real seconds:
+	set {_msgnum} to a random integer from 0 to 9
+	loop all players:
+		loop-player has permission "hb.ab.see"
+		send "%{hb.prefix}% &bAuto-Broadcast:&r %{hb.abmsg.%{_msgnum}%}%" to loop-player
+

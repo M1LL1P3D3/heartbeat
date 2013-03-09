@@ -1,0 +1,41 @@
+on sign change:
+	set {_signer} to player
+	set {_l1} to line 1
+	set {_l2} to line 2
+	set {_l3} to line 3
+	set {_l4} to line 4
+	loop all players:
+		{hb.u.%loop-player%.pref.spy} is 1
+		send "%{hb.prefix}% &bSpy: &3%{_signer}%&e placed a sign, and it says:" to loop-player
+		send "%{hb.prefix}% &bSpy: &eLine one -> '&6%{_l1}%&e'" to loop-player
+		send "%{hb.prefix}% &bSpy: &eLine two -> '&6%{_l2}%&e'" to loop-player
+		send "%{hb.prefix}% &bSpy: &eLine three -> '&6%{_l3}%&e'" to loop-player
+		send "%{hb.prefix}% &bSpy: &eLine four -> '&6%{_l4}%&e'" to loop-player
+command /spy:
+	permission: hb.spy
+	description: Toggle Spy on or off.
+	usage: /<command>
+	trigger:
+		if {hb.u.%player%.pref.spy} = 1:
+			set {hb.u.%player%.pref.spy} to 0
+			send "%{hb.prefix}% &bSpy: &aSpy was &6on&a, you toggled it &coff&a."
+		else:
+			set {hb.u.%player%.pref.spy} to 1
+			send "%{hb.prefix}% &bSpy: &aSpy was &coff&a, you toggled it &6on&a."
+on command:
+	if player is set:
+		loop all players:
+			{hb.u.%loop-player%.pref.spy} = 1
+			send "%{hb.prefix}% &bSpy: &3%player%&e ran the command &6%command%" to loop-player
+		log "%name of player% ~ %command%" to "cmd.log"
+	if command contains "/":
+		log "%name of player% ~ %command% ~ %location of player%" to "worldedit.log"
+	if {hb.u.%player%.pref.pvp} is 1:
+		if command contains "gm" or "gamemode" or "fly":
+			cancel event
+			subtract 2 from {hb.u.%player%.pvp.points}
+			send "%{hb.prefix}% &bPVP: &cNo cheating in PVP! You lost 2 points!"
+			loop all players:
+				{hb.u.%loop-player%.pref.pvp} is 1
+				send "%{hb.prefix}% &bPVP: &3%player%&e tried to cheat in PVP!" to loop-player
+
