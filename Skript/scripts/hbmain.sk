@@ -1,18 +1,20 @@
 every 180 real seconds:
-	make console execute "/time day all"
-	make console execute "/weather plots sun"
-	make console execute "/weather spawn sun"
-	make console execute "/weather flatlands sun"
-	make console execute "/butcher"
+	loop all worlds:
+		set time in loop-world to 9:00
+		set weather in loop-world to clear
+	loop all entities:
+		loop-entity is not a player
+		kill loop-entity
 	broadcast "%{hb.prefix}% &aRefreshed environments."
 command /refresh:
 	permission: hb.refresh
 	trigger:
-		make console execute "/time day all"
-		make console execute "/weather plots sun"
-		make console execute "/weather spawn sun"
-		make console execute "/weather flatlands sun"
-		make console execute "/butcher"
+		loop all worlds:
+			set time in loop-world to 9:00
+			set weather in loop-world to clear
+		loop all entities:
+			loop-entity is not a player
+			kill loop-entity
 		broadcast "%{hb.prefix}% &aEnvironments were manually refreshed by &3%player%&a."
 command /everyone:
 	permission: hb.everyone
@@ -116,19 +118,45 @@ command /hb <text>:
 			make player execute "/skript reload all"
 			exit trigger
 		arg 1 is "stop":
-			send "%{hb.prefix}% &4WARNING: &cDisabling heartbeat !"
-			send "%{hb.prefix}% &eYou can re-enable it with &6/hb start&e."
-			send "%{hb.prefix}% &eSending request to Skript engine..."
-			make console execute "/skript enable hbfallback"
-			send "%{hb.prefix}% &aheartbeat was disabled."
-			make console execute "/skript disable hbgoto"
-			make console execute "/skript disable hbab"
-			make console execute "/skript disable hbpvp"
-			make console execute "/skript disable hbspy"
-			make console execute "/skript disable hbgg"
-			make console execute "/skript disable hbconf"
-			make console execute "/skript disable hbchat"
-			make console execute "/skript disable hbconnect"
-			make console execute "/skript disable hbadmin"
+			if {hb.live} is 1:
+				send "%{hb.prefix}% &4WARNING: &cDisabling heartbeat !"
+				send "%{hb.prefix}% &eYou can re-enable it with &6/hb start&e."
+				send "%{hb.prefix}% &eSending request to Skript engine..."
+				make console execute "/skript disable hbgoto"
+				make console execute "/skript disable hbab"
+				make console execute "/skript disable hbpvp"
+				make console execute "/skript disable hbspy"
+				make console execute "/skript disable hbgg"
+				make console execute "/skript disable hbconf"
+				make console execute "/skript disable hbchat"
+				make console execute "/skript disable hbconnect"
+				make console execute "/skript disable hbadmin"
+				make console execute "/skript disable hbinfo"
+				wait 1 real second
+				set {hb.live} to 0
+				send "%{hb.prefix}% &aheartbeat was disabled."
+				exit trigger
+			send "%{hb.prefix}% &cheartbeat is already off!"
+			exit trigger
+		arg 1 is "start":
+			if {hb.live} is 0:
+				send "%{hb.prefix}% &4WARNING: &cEnabling heartbeat !"
+				send "%{hb.prefix}% &eYou can disable it with &6/hb stop&e."
+				send "%{hb.prefix}% &eSending request to Skript engine..."
+				make console execute "/skript enable hbgoto"
+				make console execute "/skript enable hbab"
+				make console execute "/skript enable hbpvp"
+				make console execute "/skript enable hbspy"
+				make console execute "/skript enable hbgg"
+				make console execute "/skript enable hbconf"
+				make console execute "/skript enable hbchat"
+				make console execute "/skript enable hbconnect"
+				make console execute "/skript enable hbadmin"
+				make console execute "/skript enable hbinfo"
+				wait 1 real second
+				set {hb.live} to 1
+				send "%{hb.prefix}% &aheartbeat was enabled."
+				exit trigger
+			send "%{hb.prefix}% &cheartbeat is already on!"
 			exit trigger
 		send "%{hb.prefix}% &cInvalid subcommand. Use &6info&c, &6reload&c, &6stop&c, or &6help&c."

@@ -1,4 +1,11 @@
 variables:
 	{hb.prefix} = "&0[&4<i>h&c<i>eart&3<i>b&b<i>eat&0]&f"
-	{hb.ver} = "2.3"
-	{hb.server} = "the server"
+	{hb.ver} = "3.0"
+	{hb.server} = "Name of your server here! Change it in sbconf.sk!"
+	{hb.info.website} = "URL of your server website here! Change it in hbconf.sk!"
+	{hb.info.vote} = "URL to PMC vote link here! Change it in hbconf.sk!"
+	{hb.info.fb} = "URL of Facebook page here! Change it in sbconf.sk!"
+	{hb.info.twitter} = "URL of Twitter feed here! Change it in sbconf.sk!"
+	{hb.info.yt} = "URL of YouTube channel here! Change it in sbconf.sk!"
+on script load:
+	set {hb.live} to 1

@@ -1,5 +1,9 @@
 on login:
 	set join message to "%{hb.prefix}% &3%player%&7 logged &aon&7 to %{hb.server}%."
+	if {hb.u.%player%.tab} is set:
+		set the player's tablist name to "&%{hb.u.%player%.tab}%%name of player%"
+	else:
+		set the player's tablist name to "&3%name of player%"
 	if {hb.u.%player%.member} is not set:
 		send "%{hb.prefix}% &aWelcome to %{hb.server}%!"
 		send "%{hb.prefix}% &aPlease take time to read all signs at spawn!"
@@ -14,3 +18,11 @@ on login:
 	set {hb.u.%player%.timeon} to now
 on quit:
 	set leave message to "%{hb.prefix}% &3%name of player%&7 logged &coff&7 of %{hb.server}%."
+command /tab <text>:
+	trigger:
+		arg 1 is "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", or "f":
+			set {hb.u.%player%.tab} to arg 1
+			set the player's tablist name to "&%arg 1%%name of player%"
+			send "%{hb.prefix}% &aThe color of your name in the TAB list is now '&%arg 1%%arg 1%&a'."
+		else:
+			send "%{hb.prefix}% &cPlease use a valid color!"

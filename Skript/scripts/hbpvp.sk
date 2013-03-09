@@ -7,6 +7,7 @@ command /pvp:
 			execute console command "/gm c %name of player%"
 			send "%{hb.prefix}% &aPVP mode was &6on&a, you toggled it &coff&a."
 			clear inventory of player
+			equip player with all diamond armor
 		else:
 			set {hb.u.%player%.pref.pvp} to 1
 			execute console command "/gm s %name of player%"
