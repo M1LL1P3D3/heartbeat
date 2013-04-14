@@ -7,5 +7,6 @@ variables:
 	{hb.info.fb} = "URL of Facebook page here! Change it in sbconf.sk!"
 	{hb.info.twitter} = "URL of Twitter feed here! Change it in sbconf.sk!"
 	{hb.info.yt} = "URL of YouTube channel here! Change it in sbconf.sk!"
+# TOUCH NOTHING BELOW THIS LINE
 on script load:
 	set {hb.live} to 1
